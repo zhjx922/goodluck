@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>车模抽奖系统（参考摇号算法）</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .user-input-area {
+            margin-bottom: 20px;
+        }
+        .user-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex: 1;
+        }
+        input[type="number"] {
+            width: 120px;
+        }
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .btn-add {
+            background-color: #28a745;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .btn-add:hover {
+            background-color: #218838;
+        }
+        .params-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            min-height: 80px;
+        }
+        .result-area h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .winner-item {
+            padding: 5px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+        .error {
+            color: #dc3545;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>车模抽奖系统（参考摇号算法）</h1>
+        
+        <!-- 用户信息录入区 -->
+        <div class="user-input-area">
+            <h3>用户信息录入</h3>
+            <button class="btn-add" id="addUserBtn">+ 添加用户</button>
+            <div id="usersContainer">
+                <!-- 初始用户行 -->
+                <div class="user-row">
+                    <input type="text" placeholder="用户昵称" class="nickname">
+                    <input type="number" placeholder="点赞数" class="likeCount" min="1" value="1">
+                    <button class="btn-danger delete-row">删除</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 抽奖参数设置 -->
+        <div class="params-area">
+            <input type="number" id="seedInput" placeholder="随机种子数（数字）" min="1" value="">
+            <input type="number" id="winnerCountInput" placeholder="中奖人数" min="1" value="1">
+            <button id="drawBtn">开始抽奖</button>
+            <button id="resetBtn" class="btn-danger">重置</button>
+        </div>
+
+        <!-- 抽奖结果展示 -->
+        <div class="result-area">
+            <h3>抽奖结果</h3>
+            <div id="resultContainer" class="error">请录入用户信息后点击抽奖</div>
+        </div>
+    </div>
+
+ 
+    <script>
+    !function(f,a,c){var s,l=256,p="random",d=c.pow(l,6),g=c.pow(2,52),y=2*g,h=l-1;function n(n,t,r){function e(){for(var n=u.g(6),t=d,r=0;n<g;)n=(n+r)*l,t*=l,r=u.g(1);for(;y<=n;)n/=2,t/=2,r>>>=1;return(n+r)/t}var o=[],i=j(function n(t,r){var e,o=[],i=typeof t;if(r&&"object"==i)for(e in t)try{o.push(n(t[e],r-1))}catch(n){}return o.length?o:"string"==i?t:t+"\0"}((t=1==t?{entropy:!0}:t||{}).entropy?[n,S(a)]:null==n?function(){try{var n;return s&&(n=s.randomBytes)?n=n(l):(n=new Uint8Array(l),(f.crypto||f.msCrypto).getRandomValues(n)),S(n)}catch(n){var t=f.navigator,r=t&&t.plugins;return[+new Date,f,r,f.screen,S(a)]}}():n,3),o),u=new m(o);return e.int32=function(){return 0|u.g(4)},e.quick=function(){return u.g(4)/4294967296},e.double=e,j(S(u.S),a),(t.pass||r||function(n,t,r,e){return e&&(e.S&&v(e,u),n.state=function(){return v(u,{})}),r?(c[p]=n,t):n})(e,i,"global"in t?t.global:this==c,t.state)}function m(n){var t,r=n.length,u=this,e=0,o=u.i=u.j=0,i=u.S=[];for(r||(n=[r++]);e<l;)i[e]=e++;for(e=0;e<l;e++)i[e]=i[o=h&o+n[e%r]+(t=i[e])],i[o]=t;(u.g=function(n){for(var t,r=0,e=u.i,o=u.j,i=u.S;n--;)t=i[e=h&e+1],r=r*l+i[h&(i[e]=i[o=h&o+t])+(i[o]=t)];return u.i=e,u.j=o,r})(l)}function v(n,t){return t.i=n.i,t.j=n.j,t.S=n.S.slice(),t}function j(n,t){for(var r,e=n+"",o=0;o<e.length;)t[h&o]=h&(r^=19*t[h&o])+e.charCodeAt(o++);return S(t)}function S(n){return String.fromCharCode.apply(0,n)}if(j(c.random(),a),"object"==typeof module&&module.exports){module.exports=n;try{s=require("crypto")}catch(n){}}else"function"==typeof define&&define.amd?define(function(){return n}):c["seed"+p]=n}("undefined"!=typeof self?self:this,[],Math);
+    </script>
+    <script>
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const usersContainer = document.getElementById('usersContainer');
+            const addUserBtn = document.getElementById('addUserBtn');
+            const drawBtn = document.getElementById('drawBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const resultContainer = document.getElementById('resultContainer');
+
+            // 添加用户行
+            addUserBtn.addEventListener('click', function() {
+                const newRow = document.createElement('div');
+                newRow.className = 'user-row';
+                newRow.innerHTML = `
+                    <input type="text" placeholder="用户昵称" class="nickname">
+                    <input type="number" placeholder="点赞数" class="likeCount" min="1" value="1">
+                    <button class="btn-danger delete-row">删除</button>
+                `;
+                usersContainer.appendChild(newRow);
+                
+                // 为新添加的删除按钮绑定事件
+                newRow.querySelector('.delete-row').addEventListener('click', function() {
+                    if (usersContainer.children.length > 1) {
+                        newRow.remove();
+                    } else {
+                        alert('至少保留一个用户！');
+                    }
+                });
+            });
+
+            // 绑定删除按钮事件（初始行）
+            document.querySelectorAll('.delete-row').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (usersContainer.children.length > 1) {
+                        this.parentElement.remove();
+                    } else {
+                        alert('至少保留一个用户！');
+                    }
+                });
+            });
+
+            // 重置按钮
+            resetBtn.addEventListener('click', function() {
+                // 清空用户行，保留初始行
+                usersContainer.innerHTML = `
+                    <div class="user-row">
+                        <input type="text" placeholder="用户昵称" class="nickname">
+                        <input type="number" placeholder="点赞数" class="likeCount" min="1" value="1">
+                        <button class="btn-danger delete-row">删除</button>
+                    </div>
+                `;
+                // 重置参数
+                document.getElementById('seedInput').value = '';
+                document.getElementById('winnerCountInput').value = '1';
+                // 重置结果
+                resultContainer.className = 'error';
+                resultContainer.textContent = '请录入用户信息后点击抽奖';
+                // 重新绑定删除按钮事件
+                document.querySelectorAll('.delete-row').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        if (usersContainer.children.length > 1) {
+                            this.parentElement.remove();
+                        } else {
+                            alert('至少保留一个用户！');
+                        }
+                    });
+                });
+            });
+
+            // 核心抽奖逻辑
+            drawBtn.addEventListener('click', function() {
+                // 1. 收集并校验用户数据
+                const userRows = document.querySelectorAll('.user-row');
+                const users = [];
+                let hasError = false;
+                
+                userRows.forEach((row, index) => {
+                    const nickname = row.querySelector('.nickname').value.trim();
+                    const likeCount = parseInt(row.querySelector('.likeCount').value);
+                    
+                    if (!nickname) {
+                        resultContainer.className = 'error';
+                        resultContainer.textContent = `第${index+1}个用户的昵称不能为空！`;
+                        hasError = true;
+                        return;
+                    }
+                    if (isNaN(likeCount) || likeCount < 1) {
+                        resultContainer.className = 'error';
+                        resultContainer.textContent = `第${index+1}个用户的点赞数必须是大于0的数字！`;
+                        hasError = true;
+                        return;
+                    }
+                    users.push({ nickname, likeCount });
+                });
+                
+                if (hasError) return;
+
+                // 2. 校验抽奖参数
+                const seed = parseInt(document.getElementById('seedInput').value);
+                const winnerCount = parseInt(document.getElementById('winnerCountInput').value);
+                
+                if (isNaN(seed) || seed < 1) {
+                    resultContainer.className = 'error';
+                    resultContainer.textContent = '随机种子数必须是大于0的数字！';
+                    return;
+                }
+                if (isNaN(winnerCount) || winnerCount < 1 || winnerCount > users.length) {
+                    resultContainer.className = 'error';
+                    resultContainer.textContent = `中奖人数必须是1-${users.length}之间的数字！`;
+                    return;
+                }
+
+                // 3. 核心抽奖算法（参考摇号：固定种子+加权随机）
+                // 设置随机种子（保证相同种子结果一致）
+                const rng = new Math.seedrandom(seed);
+                
+                // 步骤1：计算总点赞数（权重总和）
+                const totalLikes = users.reduce((sum, user) => sum + user.likeCount, 0);
+                
+                // 步骤2：加权抽奖（不重复中奖）
+                const winners = [];
+                const remainingUsers = [...users]; // 待抽奖用户副本
+                
+                while (winners.length < winnerCount && remainingUsers.length > 0) {
+                    // 生成0-总点赞数之间的随机数
+                    const randomNum = rng() * totalLikes;
+                    let currentSum = 0;
+                    let selectedIndex = -1;
+                    
+                    // 遍历找到随机数对应的用户
+                    for (let i = 0; i < remainingUsers.length; i++) {
+                        currentSum += remainingUsers[i].likeCount;
+                        if (currentSum >= randomNum) {
+                            selectedIndex = i;
+                            break;
+                        }
+                    }
+                    
+                    // 添加中奖用户并从待抽奖列表移除
+                    const winner = remainingUsers.splice(selectedIndex, 1)[0];
+                    winners.push(winner);
+                }
+
+                // 4. 展示结果
+                resultContainer.className = '';
+                let resultHtml = '<div>';
+                resultHtml += `<p>🎲 随机种子：${seed} | 中奖人数：${winnerCount}</p>`;
+                resultHtml += '<p>🏆 中奖用户列表：</p>';
+                winners.forEach((winner, index) => {
+                    resultHtml += `<div class="winner-item">${index+1}. ${winner.nickname}（点赞数：${winner.likeCount}）</div>`;
+                });
+                resultHtml += '</div>';
+                resultContainer.innerHTML = resultHtml;
+            });
+        });
+    </script>
+</body>
+</html>
